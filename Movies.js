@@ -1,12 +1,20 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-mongoose.connect(process.env.DB);
+mongoose.Promise = global.Promise;
 
-// Movie schema
-var MovieSchema = new Schema({
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true } );
+mongoose.set('useCreateIndex', true);
 
+var movieSchema  = new Schema({
+    Title: {type:String, required:true},
+    Year: {type:Date, required:true},
+    Genre: {type:String, required:true, enum:["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mystery", "Thriller", "Western"]},
+    Actors: {type:[{ActorName:String, CharacterName:String}], required:true},
+    ImageURI: {type:String, required: false},
+    averageRating: {type:Number, required: false}
 });
 
-// return the model
-module.exports = mongoose.model('Movie', MovieSchema);
+var Movie = mongoose.model('Movie', movieSchema);
+
+module.exports = Movie;
